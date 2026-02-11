@@ -1,0 +1,4 @@
+[KNN] k=5 weights=distance metric=minkowski p=2
+Test R2   = 0.737573
+Test RMSE = 3.116522
+Test MAE  = 1.998560

@@ -1,0 +1,5 @@
+[GBDT]
+n_estimators=500 lr=0.05 max_depth=3 subsample=1.0 loss=squared_error
+Test R2   = 0.760234
+Test RMSE = 2.978928
+Test MAE  = 2.091102

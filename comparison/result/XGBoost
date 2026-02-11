@@ -1,0 +1,5 @@
+[XGBoost]
+n_estimators=1500 lr=0.02 max_depth=6 subsample=0.8 colsample_bytree=0.8
+Test R2   = 0.796626
+Test RMSE = 2.743559
+Test MAE  = 1.794412

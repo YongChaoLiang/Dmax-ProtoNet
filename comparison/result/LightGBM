@@ -1,0 +1,5 @@
+[LightGBM]
+n_estimators=3000 lr=0.02 num_leaves=63 subsample=0.8 colsample_bytree=0.8
+Test R2   = 0.745502
+Test RMSE = 3.069081
+Test MAE  = 1.969527

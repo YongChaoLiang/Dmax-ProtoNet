@@ -1,0 +1,5 @@
+[CatBoost]
+iters=1000 lr=0.02 depth=8 loss=RMSE bootstrap=Bayesian rsm=0.8
+Test R2   = 0.826261
+Test RMSE = 2.535801
+Test MAE  = 1.859576

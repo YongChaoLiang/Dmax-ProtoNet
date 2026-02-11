@@ -1,0 +1,5 @@
+[RandomForest]
+n_estimators=500 max_depth=None min_samples_split=2 min_samples_leaf=1 max_features=sqrt bootstrap=False
+Test R2   = 0.832985
+Test RMSE = 2.486247
+Test MAE  = 1.642049
