@@ -4,8 +4,6 @@ This repository provides the data and code accompanying the paper:
 
 **A Method Based on Property Primitives and Transformer for Predicting the Critical Casting Diameter of Bulk Metallic Glasses**
 
-Dmax-ProtoNet (DPN) is designed for predicting the critical casting diameter, \(D_{max}\), of bulk metallic glasses from composition-based inputs.
-
 ## Repository Structure
 
 ```text
