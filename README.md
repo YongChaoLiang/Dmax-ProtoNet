@@ -161,7 +161,7 @@ python Visualization/predict_ternary_map.py
 Typical output:
 
 ```text
-Visualization/predict_result/seed=0_mixup/ternary_Al_Co_Zr_pred.csv
+Visualization/predict_result/seed=0_mixup/ternary_Ca_Mg_Cu_pred.csv
 ```
 
 Users can modify the following variables in the script to change the ternary system and grid resolution:
