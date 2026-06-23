@@ -167,7 +167,7 @@ Visualization/predict_result/seed=0_mixup/ternary_Al_Co_Zr_pred.csv
 Users can modify the following variables in the script to change the ternary system and grid resolution:
 
 ```python
-A, B, C = "Al", "Co", "Zr"
+A, B, C = "Ca", "Mg", "Cu"
 STEP = 0.01
 ```
 
