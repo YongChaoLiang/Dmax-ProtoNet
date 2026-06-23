@@ -17,8 +17,7 @@ Dmax-ProtoNet/
 ├── saved_models/                     # Trained model checkpoints
 ├── Visualization/
 │   ├── plot_test_scatter.py          # Test-set prediction scatter plot
-│   ├── predict_ternary_grid.py       # Ternary composition-grid prediction
-│   ├── plot_ternary_map.py           # Ternary composition map visualization
+│   ├── predict_ternary_map.py       # Ternary composition-grid prediction
 │   └── primitive_pca_analysis.py     # PCA visualization of the learned Property Primitive matrix
 ├── figures/
 │   └── model.png                     # Model architecture figure
