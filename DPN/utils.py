@@ -2,21 +2,13 @@
 import numpy as np
 import pandas as pd
 import torch
+import re
 
-
-# Element symbols used to identify composition feature columns
-ELEMENT_SYMBOLS = [
-    "H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne",
-    "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar", "K", "Ca",
-    "Sc", "Ti", "V", "Cr", "Mn", "Fe", "Co", "Ni", "Cu", "Zn",
-    "Ga", "Ge", "As", "Se", "Br", "Kr", "Rb", "Sr", "Y", "Zr",
-    "Nb", "Mo", "Tc", "Ru", "Rh", "Pd", "Ag", "Cd", "In", "Sn",
-    "Sb", "Te", "I", "Xe", "Cs", "Ba", "La", "Ce", "Pr", "Nd",
-]
-
-
+NON_FEATURE_COLUMNS = {
+    "Dmax", "dmax", "D_max", "target",
+    "index", "Index", "Unnamed: 0", "unnamed: 0"
+}
 def set_seed(seed: int = 42):
-    """Set random seeds for Python/NumPy/PyTorch to improve reproducibility."""
     import random
     random.seed(seed)
     np.random.seed(seed)
@@ -25,9 +17,7 @@ def set_seed(seed: int = 42):
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
 
-
 def metrics(y_true: np.ndarray, y_pred: np.ndarray) -> dict:
-    """Compute regression metrics (R2 / RMSE / MAE) for 1D targets."""
     y_true = y_true.reshape(-1)
     y_pred = y_pred.reshape(-1)
     ss_res = np.sum((y_true - y_pred) ** 2)
@@ -37,20 +27,58 @@ def metrics(y_true: np.ndarray, y_pred: np.ndarray) -> dict:
     mae = float(np.mean(np.abs(y_true - y_pred)))
     return {"r2": float(r2), "rmse": rmse, "mae": mae}
 
+def guess_feature_columns(df: pd.DataFrame, target: str = "Dmax", n_feat: int = 45):
+    """
+    Select element composition columns as model input features.
 
-def guess_feature_columns(df: pd.DataFrame, target: str, n_feat: int = 45):
-    """Infer feature columns for composition vectors, prioritizing element-symbol columns."""
-    cols = [c for c in df.columns if c != target]
+    Rules:
+    1. Exclude target column.
+    2. Exclude non-physical columns such as index and Unnamed columns.
+    3. Keep only chemical-element-like column names, e.g., Al, Cu, Zr.
+    4. Require the number of selected feature columns to be exactly n_feat.
+    """
 
-    symbol_cols = [c for c in cols if c in ELEMENT_SYMBOLS]
-    if len(symbol_cols) >= n_feat:
-        return symbol_cols[:n_feat]
+    element_pattern = re.compile(r"^[A-Z][a-z]?$")
 
-    e_cols = [f"E{i}" for i in range(1, n_feat + 1)]
-    if all(c in df.columns for c in e_cols):
-        return e_cols
+    exclude_cols = {
+        target,
+        str(target).lower(),
+        "Dmax",
+        "dmax",
+        "D_max",
+        "target",
+        "index",
+        "Index",
+        "Unnamed: 0",
+        "unnamed: 0",
+    }
 
-    num_cols = [c for c in cols if pd.api.types.is_numeric_dtype(df[c])]
-    if len(num_cols) < n_feat:
-        raise ValueError("Not enough numeric feature columns found. Please check the CSV file.")
-    return num_cols[:n_feat]
+    feat_cols = []
+
+    for col in df.columns:
+        col_str = str(col)
+
+        # Exclude the target column and non-physical columns
+        if col_str in exclude_cols:
+            continue
+
+        # Exclude all index-like columns starting with "Unnamed"
+        if col_str.startswith("Unnamed"):
+            continue
+
+        # Keep only numeric columns with chemical element-symbol-like names
+        if element_pattern.match(col_str) and pd.api.types.is_numeric_dtype(df[col]):
+            feat_cols.append(col_str)
+
+    if len(feat_cols) != n_feat:
+        raise ValueError(
+            f"Expected {n_feat} element composition columns, "
+            f"but found {len(feat_cols)}.\n"
+            f"Selected columns: {feat_cols}\n"
+            f"All columns in dataframe: {list(df.columns)}"
+        )
+
+    print(f"[INFO] Selected {len(feat_cols)} feature columns:")
+    print(feat_cols)
+
+    return feat_cols
